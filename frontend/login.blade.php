@@ -1,6 +1,6 @@
 @extends('frontend.layout')
 @section('pageHeading')
-  {{ __('Organizer Login') }}
+  {{ __('Login') }}
 @endsection
 
 @section('hero-section')
@@ -24,9 +24,9 @@
         </div>
       </a>
       <div class="ur-login__left-text">
-        <h1 class="ur-login__hero-title">BACKSTAGE<br>ACCESS</h1>
+        <h1 class="ur-login__hero-title">YOUR<br>EVENTS<br>AWAIT</h1>
         <div class="ur-login__hero-line"></div>
-        <p class="ur-login__hero-sub">Organizer portal. Manage events, track sales, control everything.</p>
+        <p class="ur-login__hero-sub">One account. Whether you attend or organize — log in and take control.</p>
       </div>
       <div class="ur-login__left-stats">
         <div class="ur-login__stat">
@@ -48,7 +48,7 @@
   <div class="ur-login__right">
     <div class="ur-login__right-header">
       <a href="{{ route('index') }}" class="ur-login__back">
-        <i class="fas fa-arrow-left"></i> BACK
+        <i class="fas fa-arrow-left"></i> HOME
       </a>
       <a href="{{ route('organizer.signup') }}" class="ur-login__switch">
         NO ACCOUNT? <strong>SIGN UP</strong>
@@ -57,7 +57,7 @@
 
     <div class="ur-login__form-wrap">
       <div class="ur-login__form-header">
-        <span class="ur-login__tag">ORGANIZER PORTAL</span>
+        <span class="ur-login__tag">UNIFIED ACCESS</span>
         <h2 class="ur-login__form-title">LOG<br>IN</h2>
       </div>
 
@@ -71,9 +71,9 @@
       <form id="login-form" action="{{ route('organizer.authentication') }}" method="POST" class="ur-login__form">
         @csrf
         <div class="ur-login__field">
-          <label class="ur-login__label">USERNAME</label>
+          <label class="ur-login__label">EMAIL OR USERNAME</label>
           <div class="ur-login__input-wrap">
-            <input type="text" name="username" id="username" class="ur-login__input" placeholder="Enter your username" autocomplete="username">
+            <input type="text" name="username" id="username" class="ur-login__input" placeholder="Enter your email or username" autocomplete="username">
             <div class="ur-login__input-icon"><i class="fas fa-user"></i></div>
           </div>
           @error('username')
@@ -91,16 +91,6 @@
             <p class="ur-login__error">{{ $message }}</p>
           @enderror
         </div>
-
-        @if (!empty($basicInfo) && $basicInfo->google_recaptcha_status == 1)
-          <div class="ur-login__field">
-            {!! NoCaptcha::renderJs() !!}
-            {!! NoCaptcha::display() !!}
-            @error('g-recaptcha-response')
-              <p class="ur-login__error">{{ $message }}</p>
-            @enderror
-          </div>
-        @endif
 
         <button type="submit" class="ur-login__submit">
           <span class="ur-login__submit-text">ENTER</span>
@@ -178,8 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
   width: 100%;
   background: var(--bg-black);
 }
-
-/* LEFT PANEL - Atmospheric */
 .ur-login__left {
   flex: 1;
   position: relative;
@@ -242,15 +230,12 @@ document.addEventListener('DOMContentLoaded', function() {
   max-width: 380px;
   line-height: 1.5;
 }
-
-/* Stats row */
 .ur-login__left-stats {
   display: flex;
   gap: 40px;
   padding-top: 32px;
   border-top: 1px solid rgba(255,255,255,0.12);
 }
-.ur-login__stat {}
 .ur-login__stat-num {
   font-family: var(--font-display);
   font-size: 32px;
@@ -268,7 +253,6 @@ document.addEventListener('DOMContentLoaded', function() {
   margin-top: 4px;
 }
 
-/* RIGHT PANEL - Form */
 .ur-login__right {
   flex: 0 0 480px;
   max-width: 480px;
@@ -277,7 +261,6 @@ document.addEventListener('DOMContentLoaded', function() {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  position: relative;
 }
 .ur-login__right-header {
   display: flex;
@@ -289,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .ur-login__back {
   font-family: var(--font-display);
   font-size: 14px;
-  color: var(--gray, #8a8a8a);
+  color: rgba(255,255,255,0.5);
   letter-spacing: 2px;
   transition: color 0.2s;
 }
@@ -298,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .ur-login__switch {
   font-family: var(--font-body);
   font-size: 12px;
-  color: var(--gray, #8a8a8a);
+  color: rgba(255,255,255,0.5);
   letter-spacing: 0.5px;
   transition: color 0.2s;
 }
@@ -309,7 +292,6 @@ document.addEventListener('DOMContentLoaded', function() {
   padding-bottom: 1px;
 }
 
-/* Form area */
 .ur-login__form-wrap {
   flex: 1;
   display: flex;
@@ -336,7 +318,6 @@ document.addEventListener('DOMContentLoaded', function() {
   letter-spacing: 2px;
 }
 
-/* Alerts */
 .ur-login__alert {
   padding: 12px 16px;
   margin-bottom: 20px;
@@ -345,20 +326,10 @@ document.addEventListener('DOMContentLoaded', function() {
   font-weight: 600;
   border: 3px solid;
 }
-.ur-login__alert--success {
-  border-color: #22c55e;
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.06);
-}
-.ur-login__alert--error {
-  border-color: #ef4444;
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.06);
-}
+.ur-login__alert--success { border-color: #22c55e; color: #22c55e; background: rgba(34,197,94,0.06); }
+.ur-login__alert--error { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.06); }
 
-/* Form fields */
 .ur-login__form { display: flex; flex-direction: column; gap: 24px; }
-.ur-login__field {}
 .ur-login__label {
   font-family: var(--font-display);
   font-size: 14px;
@@ -390,9 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
   padding: 16px 48px 16px 16px;
   letter-spacing: 0.5px;
 }
-.ur-login__input::placeholder {
-  color: rgba(255,255,255,0.2);
-}
+.ur-login__input::placeholder { color: rgba(255,255,255,0.2); }
 .ur-login__input-icon {
   position: absolute;
   right: 16px;
@@ -402,9 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
   font-size: 16px;
   transition: color 0.2s;
 }
-.ur-login__input-wrap.is-focused .ur-login__input-icon {
-  color: var(--white);
-}
+.ur-login__input-wrap.is-focused .ur-login__input-icon { color: var(--white); }
 .ur-login__error {
   font-family: var(--font-body);
   font-size: 13px;
@@ -413,7 +380,6 @@ document.addEventListener('DOMContentLoaded', function() {
   font-weight: 600;
 }
 
-/* Submit button */
 .ur-login__submit {
   display: flex;
   align-items: center;
@@ -439,19 +405,10 @@ document.addEventListener('DOMContentLoaded', function() {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 rgba(255,255,255,0.1);
 }
-.ur-login__submit-arrow {
-  font-size: 18px;
-  transition: transform 0.2s;
-}
-.ur-login__submit:hover .ur-login__submit-arrow {
-  transform: translateX(6px);
-}
+.ur-login__submit-arrow { font-size: 18px; transition: transform 0.2s; }
+.ur-login__submit:hover .ur-login__submit-arrow { transform: translateX(6px); }
 
-/* Links */
-.ur-login__links {
-  text-align: center;
-  margin-top: 4px;
-}
+.ur-login__links { text-align: center; margin-top: 4px; }
 .ur-login__link {
   font-family: var(--font-display);
   font-size: 13px;
@@ -459,11 +416,8 @@ document.addEventListener('DOMContentLoaded', function() {
   color: rgba(255,255,255,0.35);
   transition: color 0.2s;
 }
-.ur-login__link:hover {
-  color: var(--white);
-}
+.ur-login__link:hover { color: var(--white); }
 
-/* Footer */
 .ur-login__right-footer {
   padding: 16px 36px;
   border-top: 1px solid rgba(255,255,255,0.06);
@@ -476,7 +430,6 @@ document.addEventListener('DOMContentLoaded', function() {
   margin: 0;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .ur-login { flex-direction: column; }
   .ur-login__left { min-height: 40vh; flex: none; }

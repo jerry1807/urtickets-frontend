@@ -1,64 +1,19 @@
-<!-- Google Fonts -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap"
-  rel="stylesheet">
-<!-- FlatIcon Font -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/flaticon.css') }}">
-<!-- Font Awesome -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/fontawesome.5.9.0.min.css') }}">
-<!-- Bootstrap css -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/bootstrap.4.5.3.min.css') }}">
-<!-- Magnific Popup -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/magnific-popup.min.css') }}">
-<!-- Slick Slider -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/slick.css') }}">
-<!-- jQuery UI CSS -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/jquery-ui.min.css') }}">
-<!-- Padding Margin -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/spacing.min.css') }}">
-<!-- Menu css -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/menu.css') }}">
-<!-- datatables css -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/datatables.min.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/front/css/dataTables.bootstrap4.css') }}">
-<!-- dashboard css -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/dashboard.css') }}">
-<!-- Menu css -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/menu.css') }}">
-<!-- Main css -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="{{ asset('assets/front/css/style.css') }}">
-<!-- Responsive css -->
-<link rel="stylesheet" href="{{ asset('assets/front/css/responsive.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/front/css/daterangepicker.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/front/css/toastr.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/front/css/organizer.css') }}">
-@if ($currentLanguageInfo->direction == 1)
-  {{-- right-to-left css --}}
-  <link rel="stylesheet" href="{{ asset('assets/front/css/rtl-style.css') }}">
-
-  {{-- right-to-left-responsive css --}}
-  <link rel="stylesheet" href="{{ asset('assets/front/css/rtl-responsive.css') }}">
-@endif
 <style>
   :root {
-    scroll-behavior: auto;
-    --base-color: #454545;
-    --heading-color: #030A15;
-    --primary-color: #{{ $basicInfo->primary_color }};
-    --light-color: #F7F7F7;
-    --base-font: 'Roboto', sans-serif;
-    --heading-font: 'Plus Jakarta Sans', sans-serif;
-  }
-
-  .overlay:before {
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    opacity: {{ $basicInfo->breadcrumb_overlay_opacity }};
-    background: #{{ $basicInfo->breadcrumb_overlay_color }};
+    --bg-black: #050505;
+    --bg-panel: #111114;
+    --bg-card: #0e0e11;
+    --cyan: #FFFFFF; /* Neutral Stark White replacing neon */
+    --cyan-dim: rgba(255, 255, 255, 0.6);
+    --white: #ffffff;
+    --gray: #8a8a8a;
+    --gray-light: #c0c0c0;
+    --font-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
   }
 </style>

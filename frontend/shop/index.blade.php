@@ -1,242 +1,227 @@
 @extends('frontend.layout')
 @section('pageHeading')
-  @if (!empty($pageHeading))
-    {{ $pageHeading->shop_page_title ?? __('Shop') }}
-  @else
-    {{ __('Shop') }}
-  @endif
+  {{ __('Shop') }}
 @endsection
-@php
-  $metaKeywords = !empty($seo->meta_keyword_shop) ? $seo->meta_keyword_shop : '';
-  $metaDescription = !empty($seo->meta_description_shop) ? $seo->meta_description_shop : '';
-@endphp
-@section('meta-keywords', "{{ $metaKeywords }}")
-@section('meta-description', "$metaDescription")
 
 @section('hero-section')
-  <!-- Page Banner Start -->
-  <section class="page-banner overlay pt-120 pb-125 rpt-90 rpb-95 lazy"
-    data-bg="{{ asset('assets/admin/img/' . $basicInfo->breadcrumb) }}">
-    <div class="container">
-      <div class="banner-inner">
-        <h2 class="page-title">
-          @if (!empty($pageHeading))
-            {{ $pageHeading->shop_page_title ?? __('Shop') }}
-          @else
-            {{ __('Shop') }}
-          @endif
-        </h2>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('index') }}">{{ __('Home') }}</a></li>
-            <li class="breadcrumb-item active">
-              @if (!empty($pageHeading))
-                {{ $pageHeading->shop_page_title ?? __('Shop') }}
-              @else
-                {{ __('Shop') }}
-              @endif
-            </li>
-          </ol>
-        </nav>
-      </div>
-    </div>
-  </section>
-  <!-- Page Banner End -->
+<section class="ur-shop__hero">
+  <div class="ur-shop__hero-inner">
+    <h1 class="ur-shop__hero-title">
+      <span class="ur-shop__hero-outline">THE</span>
+      <span class="ur-shop__hero-solid">SHOP</span>
+    </h1>
+    <p class="ur-shop__hero-sub">OFFICIAL UR MERCH & EVENT GEAR</p>
+  </div>
+</section>
 @endsection
+
 @section('content')
-  <!-- Event Page Start -->
-  <section class="event-page-section py-120 rpy-100">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4">
-          <div class="sidebar rmb-75">
-            <div class="widget widget-search">
-              <form action="">
-                <input type="text" name="search"
-                  value="{{ !empty(request()->input('search')) ? request()->input('search') : '' }}"
-                  placeholder="{{ __('Search') }}.....">
-                <button type="submit" id="product-search-button" class="fa fa-search"></button>
-              </form>
-            </div>
-            <div class="widget widget-cagegory">
-              <h5 class="widget-title">{{ __('Category') }}</h5>
-              <form action="{{ route('shop') }}" id="catForm">
-                <select id="category" name="category" class="widget-select">
-                  <option disabled>{{ __('Select a Category') }}</option>
-                  <option value="">{{ __('All') }}</option>
-                  @foreach ($product_categories as $item)
-                    <option {{ request()->input('category') == $item->slug ? 'selected' : '' }}
-                      value="{{ $item->slug }}">{{ $item->name }}</option>
-                  @endforeach
+<section class="ur-shop">
 
-                </select>
-              </form>
-            </div>
+  {{-- FILTER BAR --}}
+  <div class="ur-shop__filters">
+    <div class="ur-shop__search-row">
+      <div class="ur-shop__search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="shopSearch" placeholder="SEARCH PRODUCTS..." class="ur-shop__search-input">
+      </div>
+      <select id="sortFilter" class="ur-shop__select">
+        <option value="default">DEFAULT SORTING</option>
+        <option value="new">LATEST</option>
+        <option value="low">PRICE: LOW TO HIGH</option>
+        <option value="high">PRICE: HIGH TO LOW</option>
+      </select>
+      <select id="catFilter" class="ur-shop__select">
+        <option value="">ALL CATEGORIES</option>
+        <option value="electronics">ELECTRONIC ACCESSORIES</option>
+        <option value="fashion">FASHION & BEAUTY</option>
+        <option value="home">HOME APPLIANCES</option>
+        <option value="books">BOOKS</option>
+      </select>
+    </div>
+  </div>
 
-            <div class="widget price-filter-widget">
-              <h5 class="widget-title">{{ __('Price Filter') }}</h5>
-              <div class="price-slider-range" id="range-slider"></div>
-              <div class="price-btn">
-                <input type="text" dir="ltr" id="price" value="{{ request()->input('min') }}" readonly>
-                <button class="theme-btn" id="slider_submit">{{ __('Price Filter') }}</button>
-              </div>
-            </div>
+  {{-- RESULTS BAR --}}
+  <div class="ur-shop__results-bar">
+    <span class="ur-shop__count" id="shopCount">{{ count($products) }} PRODUCTS</span>
+    <div class="ur-shop__cart-indicator">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cartCount">0</span>
+    </div>
+  </div>
 
-
-            @if (!empty(showAd(2)))
-              <div class="text-center mt-4">
-                {!! showAd(2) !!}
-              </div>
-            @endif
-          </div>
+  {{-- PRODUCT GRID --}}
+  <div class="ur-shop__grid" id="shopGrid">
+    @foreach($products as $product)
+    <div class="ur-shop__card"
+         data-cat="{{ $product->category_slug }}"
+         data-price="{{ $product->price }}"
+         data-search="{{ strtolower($product->name . ' ' . $product->category) }}">
+      <div class="ur-shop__card-img">
+        @if($product->old_price > $product->price)
+          <div class="ur-shop__card-sale">SALE</div>
+        @endif
+        <div class="ur-shop__card-overlay">
+          <button class="ur-shop__add-cart" data-name="{{ $product->name }}">
+            <i class="fas fa-shopping-cart"></i> ADD TO CART
+          </button>
         </div>
-        <div class="col-lg-8">
-          <div class="shop-page-content">
-            <form action="{{ route('shop') }}" id="shortForm">
-              @if (!empty(request()->input('category')))
-                <input type="hidden" id="category-id" name="category"
-                  value="{{ !empty(request()->input('category')) ? request()->input('category') : '' }}">
-              @endif
-
-              @if (!empty(request()->input('min')))
-                <input type="hidden" name="min"
-                  value="{{ !empty(request()->input('min')) ? request()->input('min') : '' }}">
-              @endif
-
-              @if (!empty(request()->input('max')))
-                <input type="hidden" name="max"
-                  value="{{ !empty(request()->input('max')) ? request()->input('max') : '' }}">
-              @endif
-
-              @if (!empty(request()->input('search')))
-                <input type="hidden" name="search"
-                  value="{{ !empty(request()->input('search')) ? request()->input('search') : '' }}">
-              @endif
-
-              <div class="products-dropdown pb-35">
-                <select class="product_short" name="product_short" id="products-dropdown-select">
-                  <option {{ request()->input('product_short') == 'default' ? 'selected' : '' }} value="default">
-                    {{ __('Default Sorting') }}</option>
-                  <option {{ request()->input('product_short') == 'new' ? 'selected' : '' }} value="new">
-                    {{ __('Sort by Latest') }}</option>
-                  <option {{ request()->input('product_short') == 'old' ? 'selected' : '' }} value="old">
-                    {{ __('Oldest Product') }}</option>
-                  <option {{ request()->input('product_short') == 'hight-to-low' ? 'selected' : '' }}
-                    value="hight-to-low">
-                    {{ __('High To Low') }}</option>
-                  <option {{ request()->input('product_short') == 'low-to-high' ? 'selected' : '' }} value="low-to-high">
-                    {{ __('Low To High') }}</option>
-                </select>
-              </div>
-            </form>
-
-            <div class="row">
-              @if (count($products) > 0)
-                @foreach ($products as $item)
-                  <div class="col-md-4 col-sm-6">
-                    <div class="shop-item">
-                      <div class="image">
-                        <img class="lazy"
-                          data-src="{{ asset('assets/admin/img/product/feature_image/' . $item->feature_image) }}"
-                          alt="Product">
-                        <div class="product-icons">
-                          <a class="cart-link cart" data-href="{{ route('add.cart', $item->id) }}" data-toggle="tooltip"
-                            data-placement="top" title="{{ __('Add to Cart') }}"><i class="fas fa-shopping-cart"></i></a>
-                          <a href="{{ route('shop.details', ['slug' => $item->slug, 'id' => $item->id]) }}"
-                            class="view"><i class="far fa-eye"></i></a>
-                        </div>
-                      </div>
-                      @php
-                        $reviews = App\Models\ShopManagement\ProductReview::where('product_id', $item->id)->get();
-                        $avarage_rating = App\Models\ShopManagement\ProductReview::where('product_id', $item->id)->avg('review');
-                        $avarage_rating = round($avarage_rating, 2);
-                      @endphp
-                      <div class="content">
-                        @if ($basicInfo->is_shop_rating == 1)
-                          <div class="ratting">
-                            <div class="d-flex justify-content-between">
-                              <div class="rate">
-                                <div class="rating" style="width:{{ $avarage_rating * 20 }}%"></div>
-                              </div>
-                            </div>
-                          </div>
-                        @endif
-                        <h6><a
-                            href="{{ route('shop.details', ['slug' => $item->slug, 'id' => $item->id]) }}">{{ $item->title }}</a>
-                        </h6>
-                        <span class="price"
-                          dir="ltr">{{ $basicInfo->base_currency_symbol_position == 'left' ? $basicInfo->base_currency_symbol : '' }}
-                          {{ $item->current_price }}
-                          {{ $basicInfo->base_currency_symbol_position == 'right' ? $basicInfo->base_currency_symbol : '' }}
-                          @if (!is_null($item->previous_price))
-                            <del>{{ $basicInfo->base_currency_symbol_position == 'left' ? $basicInfo->base_currency_symbol : '' }}
-                              {{ $item->previous_price }}
-                              {{ $basicInfo->base_currency_symbol_position == 'right' ? $basicInfo->base_currency_symbol : '' }}
-                            </del>
-                          @endif
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                @endforeach
-              @else
-                <div class="col-lg-12">
-                  <h3 class="text-center">{{ __('No Product Found') }}</h3>
-                </div>
-              @endif
-            </div>
-            {{ $products->links() }}
-
-            @if (!empty(showAd(3)))
-              <div class="text-center mt-4">
-                {!! showAd(3) !!}
-              </div>
-            @endif
-          </div>
+      </div>
+      <div class="ur-shop__card-body">
+        <span class="ur-shop__card-cat">{{ strtoupper($product->category) }}</span>
+        <h3 class="ur-shop__card-name">{{ $product->name }}</h3>
+        <div class="ur-shop__card-pricing">
+          <span class="ur-shop__card-price">${{ number_format($product->price, 2) }}</span>
+          @if($product->old_price > $product->price)
+            <span class="ur-shop__card-old">${{ number_format($product->old_price, 2) }}</span>
+          @endif
         </div>
       </div>
     </div>
-  </section>
-  <!-- Event Page End -->
+    @endforeach
+  </div>
 
-  <form id="filtersForm" class="d-none" action="{{ route('shop') }}" method="GET">
-    <input type="hidden" id="category-id" name="category"
-      value="{{ !empty(request()->input('category')) ? request()->input('category') : '' }}">
-    <input type="hidden" id="country-id" name="country"
-      value="{{ !empty(request()->input('country')) ? request()->input('country') : '' }}">
+  <div class="ur-shop__empty" id="shopEmpty" style="display:none;">
+    <i class="fas fa-box-open"></i>
+    <h3>NO PRODUCTS FOUND</h3>
+    <p>TRY ADJUSTING YOUR FILTERS</p>
+  </div>
 
-    <input type="hidden" id="event" name="event"
-      value="{{ !empty(request()->input('event')) ? request()->input('event') : '' }}">
+</section>
+@endsection
 
-    <input type="hidden" id="min-id" name="min"
-      value="{{ !empty(request()->input('min')) ? request()->input('min') : '' }}">
+@section('custom-style')
+<style>
+/* HERO */
+.ur-shop__hero { background: var(--bg-black); border-bottom: 2px solid rgba(255,255,255,0.1); padding: 80px 40px 60px; text-align: center; }
+.ur-shop__hero-inner { max-width: 800px; margin: 0 auto; }
+.ur-shop__hero-outline { font-family: var(--font-display); font-size: 24px; letter-spacing: 10px; color: rgba(255,255,255,0.3); display: block; line-height: 1; animation: stampIn 0.8s cubic-bezier(0.25,1,0.5,1) both; }
+.ur-shop__hero-solid { font-family: var(--font-display); font-size: 72px; letter-spacing: 12px; color: var(--white); display: block; line-height: 1; margin-top: 4px; animation: stampIn 0.8s cubic-bezier(0.25,1,0.5,1) 0.15s both; }
+.ur-shop__hero-sub { font-family: var(--font-display); font-size: 14px; letter-spacing: 6px; color: rgba(255,255,255,0.3); margin-top: 16px; }
 
-    <input type="hidden" id="max-id" name="max"
-      value="{{ !empty(request()->input('max')) ? request()->input('max') : '' }}">
+/* LAYOUT */
+.ur-shop { max-width: 1400px; margin: 0 auto; padding: 0 40px 80px; }
+.ur-shop__filters { padding: 32px 0; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 24px; }
+.ur-shop__search-row { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
+.ur-shop__search { display: flex; align-items: center; gap: 10px; border: 2px solid rgba(255,255,255,0.1); padding: 0 16px; flex: 1; min-width: 250px; transition: border-color 0.2s; }
+.ur-shop__search:focus-within { border-color: var(--white); }
+.ur-shop__search i { color: rgba(255,255,255,0.25); font-size: 14px; flex-shrink: 0; }
+.ur-shop__search-input { background: none; border: none; outline: none; color: var(--white); font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; padding: 14px 0; width: 100%; }
+.ur-shop__search-input::placeholder { color: rgba(255,255,255,0.15); }
+.ur-shop__select { background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.1); color: var(--white); font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; padding: 12px 16px; outline: none; cursor: pointer; -webkit-appearance: none; appearance: none; transition: border-color 0.2s; }
+.ur-shop__select:focus { border-color: var(--white); }
 
-    <input type="hidden" id="keyword-id" name="search"
-      value="{{ !empty(request()->input('search')) ? request()->input('search') : '' }}">
+/* RESULTS */
+.ur-shop__results-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.ur-shop__count { font-family: var(--font-display); font-size: 13px; letter-spacing: 3px; color: rgba(255,255,255,0.3); }
+.ur-shop__cart-indicator { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; color: rgba(255,255,255,0.4); border: 2px solid rgba(255,255,255,0.1); padding: 8px 16px; transition: all 0.15s; }
+.ur-shop__cart-indicator.has-items { border-color: var(--white); color: var(--white); }
 
-    <input type="hidden" id="state-id" name="state"
-      value="{{ !empty(request()->input('state')) ? request()->input('state') : '' }}">
-    <input type="hidden" id="city-id" name="city"
-      value="{{ !empty(request()->input('city')) ? request()->input('city') : '' }}">
+/* GRID */
+.ur-shop__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
-    <input type="hidden" id="dates-id" name="dates"
-      value="{{ !empty(request()->input('dates')) ? request()->input('dates') : '' }}">
+/* CARD */
+.ur-shop__card { border: 2px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); position: relative; transition: all 0.2s; overflow: hidden; }
+.ur-shop__card:hover { border-color: var(--white); transform: translate(-3px, -3px); box-shadow: 6px 6px 0 rgba(255,255,255,0.1); }
+.ur-shop__card-img { position: relative; height: 220px; background: rgba(255,255,255,0.04); overflow: hidden; }
+.ur-shop__card-img::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 3px); pointer-events: none; }
+.ur-shop__card-sale { position: absolute; top: 12px; left: 12px; z-index: 2; font-family: var(--font-display); font-size: 11px; letter-spacing: 3px; padding: 4px 12px; background: var(--white); color: var(--bg-black); }
+.ur-shop__card-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,5,5,0.85); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.25s; z-index: 3; }
+.ur-shop__card:hover .ur-shop__card-overlay { opacity: 1; }
+.ur-shop__add-cart { font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; color: var(--white); padding: 12px 24px; border: 2px solid var(--white); background: none; cursor: pointer; transition: all 0.15s; }
+.ur-shop__add-cart i { margin-right: 8px; }
+.ur-shop__add-cart:hover { background: var(--white); color: var(--bg-black); }
 
-    <button type="submit" id="submitBtn"></button>
-  </form>
+/* CARD BODY */
+.ur-shop__card-body { padding: 16px 18px 20px; }
+.ur-shop__card-cat { font-family: var(--font-display); font-size: 10px; letter-spacing: 2.5px; color: rgba(255,255,255,0.25); display: block; margin-bottom: 6px; }
+.ur-shop__card-name { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; color: var(--white); margin-bottom: 10px; line-height: 1.2; }
+.ur-shop__card-pricing { display: flex; align-items: baseline; gap: 10px; }
+.ur-shop__card-price { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--white); }
+.ur-shop__card-old { font-family: var(--font-display); font-size: 14px; letter-spacing: 1px; color: rgba(255,255,255,0.25); text-decoration: line-through; }
+
+/* EMPTY */
+.ur-shop__empty { text-align: center; padding: 80px 20px; }
+.ur-shop__empty i { font-size: 48px; color: rgba(255,255,255,0.08); margin-bottom: 16px; }
+.ur-shop__empty h3 { font-family: var(--font-display); font-size: 24px; letter-spacing: 4px; color: rgba(255,255,255,0.25); margin-bottom: 8px; }
+.ur-shop__empty p { font-family: var(--font-display); font-size: 12px; letter-spacing: 3px; color: rgba(255,255,255,0.15); }
+
+/* RESPONSIVE */
+@media (max-width: 1100px) { .ur-shop__grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .ur-shop__hero-solid { font-size: 48px; letter-spacing: 6px; } .ur-shop__grid { grid-template-columns: repeat(2, 1fr); } .ur-shop { padding: 0 20px 60px; } .ur-shop__hero { padding: 60px 20px 40px; } .ur-shop__search-row { flex-direction: column; } }
+@media (max-width: 500px) { .ur-shop__grid { grid-template-columns: 1fr; } }
+</style>
 @endsection
 
 @section('custom-script')
-  <script type="text/javascript" src="{{ asset('assets/front/js/moment.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('assets/front/js/daterangepicker.min.js') }}"></script>
-  <script>
-    let min_price = {!! htmlspecialchars($min) !!};
-    let max_price = {!! htmlspecialchars($max) !!};
-    let curr_min = {!! !empty(request()->input('min')) ? htmlspecialchars(request()->input('min')) : 5 !!};
-    let curr_max = {!! !empty(request()->input('max')) ? htmlspecialchars(request()->input('max')) : 800 !!};
-  </script>
-  <script src="{{ asset('assets/front/js/product.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var cards = document.querySelectorAll('.ur-shop__card');
+  var searchInput = document.getElementById('shopSearch');
+  var catFilter = document.getElementById('catFilter');
+  var sortFilter = document.getElementById('sortFilter');
+  var countEl = document.getElementById('shopCount');
+  var emptyEl = document.getElementById('shopEmpty');
+  var grid = document.getElementById('shopGrid');
+  var cartCount = document.getElementById('cartCount');
+  var cartIndicator = document.querySelector('.ur-shop__cart-indicator');
+  var cartNum = 0;
+
+  function filterShop() {
+    var q = (searchInput ? searchInput.value : '').toLowerCase();
+    var cf = catFilter ? catFilter.value : '';
+    var visible = 0;
+    cards.forEach(function(card) {
+      var show = true;
+      if (q && (card.dataset.search || '').indexOf(q) === -1) show = false;
+      if (cf && card.dataset.cat !== cf) show = false;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    countEl.textContent = visible + ' PRODUCT' + (visible !== 1 ? 'S' : '');
+    emptyEl.style.display = visible === 0 ? '' : 'none';
+    grid.style.display = visible === 0 ? 'none' : '';
+  }
+
+  if (searchInput) searchInput.addEventListener('input', filterShop);
+  if (catFilter) catFilter.addEventListener('change', filterShop);
+
+  if (sortFilter) {
+    sortFilter.addEventListener('change', function() {
+      var arr = Array.from(cards);
+      arr.sort(function(a, b) {
+        var pa = parseFloat(a.dataset.price) || 0;
+        var pb = parseFloat(b.dataset.price) || 0;
+        if (sortFilter.value === 'low') return pa - pb;
+        if (sortFilter.value === 'high') return pb - pa;
+        return 0;
+      });
+      arr.forEach(function(card) { grid.appendChild(card); });
+    });
+  }
+
+  document.querySelectorAll('.ur-shop__add-cart').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      cartNum++;
+      cartCount.textContent = cartNum;
+      cartIndicator.classList.add('has-items');
+      this.innerHTML = '<i class="fas fa-check"></i> ADDED';
+      this.style.background = 'var(--white)';
+      this.style.color = 'var(--bg-black)';
+      var self = this;
+      setTimeout(function() {
+        self.innerHTML = '<i class="fas fa-shopping-cart"></i> ADD TO CART';
+        self.style.background = ''; self.style.color = '';
+      }, 1200);
+    });
+  });
+
+  cards.forEach(function(card, i) {
+    card.style.opacity = '0'; card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.4s ease, transform 0.4s ease, border-color 0.2s, box-shadow 0.2s';
+    card.style.transitionDelay = (i * 0.05) + 's';
+    setTimeout(function() { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+  });
+});
+</script>
 @endsection
