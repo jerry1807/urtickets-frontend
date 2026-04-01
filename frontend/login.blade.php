@@ -100,6 +100,14 @@
         <div class="ur-login__links">
           <a href="{{ route('organizer.forget.password') }}" class="ur-login__link">FORGOT PASSWORD?</a>
         </div>
+
+        <div class="ur-login__divider">
+          <span>OR</span>
+        </div>
+
+        <a href="#" class="ur-login__social ur-login__social--facebook">
+          <i class="fab fa-facebook-f"></i> CONTINUE WITH FACEBOOK
+        </a>
       </form>
     </div>
 
@@ -417,6 +425,55 @@ document.addEventListener('DOMContentLoaded', function() {
   transition: color 0.2s;
 }
 .ur-login__link:hover { color: var(--white); }
+
+/* DIVIDER */
+.ur-login__divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ur-login__divider::before,
+.ur-login__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+.ur-login__divider span {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.25);
+}
+
+/* SOCIAL LOGIN */
+.ur-login__social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 24px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 2px;
+  border: 3px solid;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+  text-decoration: none;
+}
+.ur-login__social i { font-size: 16px; }
+.ur-login__social--facebook {
+  border-color: #1877F2;
+  color: #1877F2;
+  background: transparent;
+}
+.ur-login__social--facebook:hover {
+  background: #1877F2;
+  color: var(--white);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(24,119,242,0.25);
+}
 
 .ur-login__right-footer {
   padding: 16px 36px;
